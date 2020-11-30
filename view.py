@@ -5,8 +5,12 @@ from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
 import sys
+import time
 
 from models.structure import *
+from models.snake import *
+from lib.controller import *
+
 import lib.transformations as tr
 import lib.lighting_shaders as ls
 import lib.easy_shaders as es
@@ -29,15 +33,24 @@ if __name__ == "__main__":
         sys.exit()
 
     glfw.make_context_current(window)
+    
+    floor=floor()
+    food=food()
+    Snake=snake()
+    controller=Controller(Snake)
+    
+    
+    glfw.set_key_callback(window, controller.on_key)
 
     # Connecting the callback function 'on_key' to handle keyboard events
 
     # Assembling the shader program (pipeline) with both shaders
     pipeline = es.SimpleModelViewProjectionShaderProgram()
     texture_pipeline = es.SimpleTextureModelViewProjectionShaderProgram()
-    
+
+ 
     # Telling OpenGL to use our shader program
-    glUseProgram(pipeline.shaderProgram)
+    glUseProgram(texture_pipeline.shaderProgram)
 
     # Setting up the clear screen color
     glClearColor(0.85, 0.85, 0.85, 1.0)
@@ -50,28 +63,29 @@ if __name__ == "__main__":
     # Using the same view and projection matrices in the whole application
     projection = tr.perspective(45, float(width)/float(height), 0.1, 100)
 
-    # Generaremos diversas cámaras.
-    static_view_1 = tr.lookAt(
-            np.array([0,-0.1,70]), # eye
-            np.array([0,0,0]), # at
-            np.array([0,0,1])  # up
-        )
-
-    static_view_2 = tr.lookAt(
-            np.array([0,-50,40]), # eye
-            np.array([0,0,0]), # at
-            np.array([0,0,1])  # up
-        )
-    
-    floor=floor()
-
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events
+        glfw.poll_events()
 
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        floor.draw(texture_pipeline,static_view_2, projection)
 
+        print([(food.x,food.y),(Snake.x,Snake.y)])
+        Snake.update()
+        Snake.move()
+        camara=controller.camera()
+
+        if ((Snake.x)>=(food.x)-0.85 
+        and (Snake.x)<=(food.x)+0.85 
+        and (Snake.y)>=(food.y)-0.85 
+        and (Snake.y)<=(food.y)+0.85):
+            food.change_position()
+        
+        food.draw(texture_pipeline, camara ,projection)
+        floor.draw(texture_pipeline, camara ,projection)
+        
+        Snake.draw(texture_pipeline, camara ,projection)
+       
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)
 
