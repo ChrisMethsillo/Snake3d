@@ -1,6 +1,7 @@
   
 import numpy as np
 from OpenGL.GL import *
+import random
 
 import lib.basic_shapes as bs
 import lib.easy_shaders as es
@@ -14,8 +15,10 @@ class head():
         self.front = 0.1
         self.turn = 0
 
-        self.GPUsnake=(es.toGPUShape(bs.createTextureCube('models/68.png'), GL_REPEAT, GL_NEAREST))
-        self.transform = tr.matmul([tr.translate(0.0,0.0,1.5),tr.uniformScale(1.5),tr.rotationZ(self.angle)])
+        ran=str(random.randint(1,4))
+
+        self.GPUsnake=(es.toGPUShape(bs.generateTextureSphere(7,7,"models/snake"+ran+".png"), GL_REPEAT, GL_LINEAR))
+        self.transform = tr.matmul([tr.translate(0.0,0.0,1.5),tr.uniformScale(0.5),tr.rotationZ(self.angle)])
     def draw(self, texture_pipeline, view, projection):
         glUseProgram(texture_pipeline.shaderProgram)
         glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, self.transform)
@@ -26,7 +29,7 @@ class head():
     def move(self):
         self.x += self.front*np.cos(self.angle)
         self.y += self.front*np.sin(self.angle)
-        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.uniformScale(1.5),tr.rotationZ(self.angle)])
+        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.uniformScale(0.5),tr.rotationZ(self.angle)])
     def update(self):
         self.angle += self.bend*self.turn
 
@@ -34,9 +37,10 @@ class body():
     def __init__(self):
         self.x , self.y = 0,0
         self.angle = 0
+        ran=str(random.randint(1,4))
 
-        self.GPUsnake=(es.toGPUShape(bs.createTextureCube('models/68.png'), GL_REPEAT, GL_NEAREST))
-        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.scale(1.5,1.5,1.5),tr.rotationZ(self.angle)])
+        self.GPUsnake=(es.toGPUShape(bs.generateTextureSphere(7,7,"models/snake"+ran+".png"), GL_REPEAT, GL_LINEAR))
+        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.uniformScale(0.5),tr.rotationZ(self.angle)])
     
     def draw(self, texture_pipeline, view, projection):
         glUseProgram(texture_pipeline.shaderProgram)
@@ -46,7 +50,7 @@ class body():
         texture_pipeline.drawShape(self.GPUsnake)
     
     def move(self):
-        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.scale(1.5,1.5,1.5),tr.rotationZ(self.angle)])
+        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.uniformScale(0.5),tr.rotationZ(self.angle)])
 
 class snake():
     def __init__(self):
@@ -75,7 +79,7 @@ class snake():
    
     def grow(self):
         self.snake_list[0].front+=0.005
-        self.snake_list[0].bend+= 0.00175
+        self.snake_list[0].bend+= 0.0011
 
 
 

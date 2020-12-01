@@ -81,8 +81,12 @@ if __name__ == "__main__":
         Snake.snake_list[0].update()
         camara=controller.camera()
 
+        glUseProgram(texture_pipeline.shaderProgram)
+
         food.draw(texture_pipeline, camara ,projection)
         floor.draw(texture_pipeline, camara ,projection)
+
+      
         
         Snake.draw(texture_pipeline, camara ,projection)
        

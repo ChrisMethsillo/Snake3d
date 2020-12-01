@@ -2,7 +2,7 @@
 
 import numpy as np
 
-import basic_shapes as bs
+import lib.basic_shapes as bs
 
 def createColorTriangleIndexation(start_index, a, b, c, color):
     # Defining locations and colors for each vertex of the shape    
@@ -66,6 +66,24 @@ def createColorQuadIndexation(start_index, a, b, c, d, color):
 
     return (vertices, indices)
 
+def createTextureQuadIndexation(start_index, a, b, c, d, texture):
+    # Defining locations and colors for each vertex of the shape    
+    vertices = [
+    #        positions               colors
+        a[0], a[1], a[2],  0, 1,
+        b[0], b[1], b[2],  1, 1,
+        c[0], c[1], c[2],  1, 0,
+        d[0], d[1], d[2],  0, 0,
+    ]
+
+    # Defining connections among vertices
+    # We have a triangle every 3 indices specified
+    indices = [
+         start_index, start_index+1, start_index+2,
+         start_index+2, start_index+3, start_index
+        ]
+
+    return (vertices, indices, texture)
 
 def createColorNormalsQuadIndexation(start_index, a, b, c, d, color):
 
