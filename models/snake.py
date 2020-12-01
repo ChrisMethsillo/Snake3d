@@ -6,12 +6,12 @@ import lib.basic_shapes as bs
 import lib.easy_shaders as es
 import lib.transformations as tr
 
-class snake():
+class head():
     def __init__(self):
         self.x, self.y = 0, 0
         self.angle = 0
-        self.bend= 0.06
-        self.front = 0.08
+        self.bend= 0.085
+        self.front = 0.1
         self.turn = 0
 
         self.GPUsnake=(es.toGPUShape(bs.createTextureCube('models/68.png'), GL_REPEAT, GL_NEAREST))
@@ -30,8 +30,68 @@ class snake():
     def update(self):
         self.angle += self.bend*self.turn
 
+class body():
+    def __init__(self):
+        self.x , self.y = 0,0
+        self.angle = 0
+
+        self.GPUsnake=(es.toGPUShape(bs.createTextureCube('models/68.png'), GL_REPEAT, GL_NEAREST))
+        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.scale(1.5,1.5,1.5),tr.rotationZ(self.angle)])
+    
+    def draw(self, texture_pipeline, view, projection):
+        glUseProgram(texture_pipeline.shaderProgram)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, self.transform)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+        texture_pipeline.drawShape(self.GPUsnake)
+    
+    def move(self):
+        self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.scale(1.5,1.5,1.5),tr.rotationZ(self.angle)])
+
+class snake():
+    def __init__(self):
+        self.snake_list=[
+            head(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body(),
+            body(),body(),body(),body(),body()]
+
+        self.snake_list[1].x=-0.3
+        self.snake_list[1].move()
+        i=1
+        for part in self.snake_list[2:]:
+            part.x+=-0.3*i
+            part.move()
+            i+=1
+
+    def draw(self, texture_pipeline, view, projection):
+        for element in self.snake_list:
+            element.draw(texture_pipeline, view, projection)
+   
+    def grow(self):
+        self.snake_list[0].front+=0.005
+        self.snake_list[0].bend+= 0.00175
 
 
+
+
+    def move_snake(self):
+        i=len(self.snake_list)-1
+        while i>0:
+            x=self.snake_list[i-1].x
+            y=self.snake_list[i-1].y
+            angle=self.snake_list[i-1].angle
+            self.snake_list[i].x=x
+            self.snake_list[i].y=y
+            self.snake_list[i].angle=angle
+            self.snake_list[i].move()
+            i-=1
+        self.snake_list[0].move()
 
 
 """ class Snake():

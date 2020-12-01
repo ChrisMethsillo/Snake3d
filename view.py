@@ -2,6 +2,7 @@
 
 import glfw
 from OpenGL.GL import *
+from OpenGL.GLU import *
 import OpenGL.GL.shaders
 import numpy as np
 import sys
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     floor=floor()
     food=food()
     Snake=snake()
-    controller=Controller(Snake)
+    controller=Controller(Snake.snake_list[0])
     
     
     glfw.set_key_callback(window, controller.on_key)
@@ -69,18 +70,17 @@ if __name__ == "__main__":
 
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-        print([(food.x,food.y),(Snake.x,Snake.y)])
-        Snake.update()
-        Snake.move()
+        if ((Snake.snake_list[0].x)>=(food.x)-0.85 
+        and (Snake.snake_list[0].x)<=(food.x)+0.85 
+        and (Snake.snake_list[0].y)>=(food.y)-0.85 
+        and (Snake.snake_list[0].y)<=(food.y)+0.85):
+            food.change_position()
+            Snake.grow()
+        
+        Snake.move_snake()
+        Snake.snake_list[0].update()
         camara=controller.camera()
 
-        if ((Snake.x)>=(food.x)-0.85 
-        and (Snake.x)<=(food.x)+0.85 
-        and (Snake.y)>=(food.y)-0.85 
-        and (Snake.y)<=(food.y)+0.85):
-            food.change_position()
-        
         food.draw(texture_pipeline, camara ,projection)
         floor.draw(texture_pipeline, camara ,projection)
         
