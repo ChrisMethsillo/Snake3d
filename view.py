@@ -38,9 +38,9 @@ if __name__ == "__main__":
     glfw.make_context_current(window)
     
     floor=floor()
-    cabeza=cabeza()
     food=food()
     Snake=snake()
+    cabeza=Snake.snake_list[0]
 
     controller=Controller(Snake.snake_list[0])
     
@@ -94,14 +94,14 @@ if __name__ == "__main__":
         Snake.snake_list[0].update()
         Snake.move_snake()
 
-        food.draw(texture_pipeline, camara ,projection)
+        
         floor.draw(texture_pipeline, camara ,projection)
         Snake.draw(texture_pipeline, camara ,projection)
         
 
-      
         glUseProgram(obj_pipeline.shaderProgram)
         cabeza.draw(obj_pipeline, camara ,projection)
+        food.draw(obj_pipeline, camara ,projection)
         
        
         # Once the render is done, buffers are swapped, showing only the complete scene.
