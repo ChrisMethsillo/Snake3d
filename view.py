@@ -90,6 +90,10 @@ if __name__ == "__main__":
 
         glUseProgram(texture_pipeline.shaderProgram)
 
+        Snake.snake_list[0].move()
+        Snake.snake_list[0].update()
+        Snake.move_snake()
+
         food.draw(texture_pipeline, camara ,projection)
         floor.draw(texture_pipeline, camara ,projection)
         Snake.draw(texture_pipeline, camara ,projection)
