@@ -12,10 +12,12 @@ from models.structure import *
 from models.snake import *
 from lib.controller import *
 
+
 import lib.transformations as tr
 import lib.lighting_shaders as ls
 import lib.easy_shaders as es
 import lib.basic_shapes as bs
+import lib.lighting_shaders as ls
 
 
 if __name__ == "__main__":
@@ -36,8 +38,10 @@ if __name__ == "__main__":
     glfw.make_context_current(window)
     
     floor=floor()
+    cabeza=cabeza()
     food=food()
     Snake=snake()
+
     controller=Controller(Snake.snake_list[0])
     
     
@@ -48,6 +52,7 @@ if __name__ == "__main__":
     # Assembling the shader program (pipeline) with both shaders
     pipeline = es.SimpleModelViewProjectionShaderProgram()
     texture_pipeline = es.SimpleTextureModelViewProjectionShaderProgram()
+    obj_pipeline = ls.SimpleTextureGouraudShaderProgram()
 
  
     # Telling OpenGL to use our shader program
@@ -67,9 +72,12 @@ if __name__ == "__main__":
     while not glfw.window_should_close(window):
         # Using GLFW to check for input events
         glfw.poll_events()
+        
 
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         if ((Snake.snake_list[0].x)>=(food.x)-0.85 
         and (Snake.snake_list[0].x)<=(food.x)+0.85 
         and (Snake.snake_list[0].y)>=(food.y)-0.85 
@@ -77,18 +85,20 @@ if __name__ == "__main__":
             food.change_position()
             Snake.grow()
         
-        Snake.move_snake()
-        Snake.snake_list[0].update()
+        
         camara=controller.camera()
 
         glUseProgram(texture_pipeline.shaderProgram)
 
         food.draw(texture_pipeline, camara ,projection)
         floor.draw(texture_pipeline, camara ,projection)
+        Snake.draw(texture_pipeline, camara ,projection)
+        
 
       
+        glUseProgram(obj_pipeline.shaderProgram)
+        cabeza.draw(obj_pipeline, camara ,projection)
         
-        Snake.draw(texture_pipeline, camara ,projection)
        
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)

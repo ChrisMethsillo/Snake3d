@@ -8,9 +8,10 @@ import lib.easy_shaders as es
 import lib.basic_shapes as bs
 
 
+
 class floor():
     def __init__(self):
-        obj = bs.createTextureCube('models/floor.png')
+        obj = bs.createTextureCube('models/textures/floor.png')
         self.GPUobj= es.toGPUShape(obj, GL_REPEAT, GL_LINEAR)
         self.model= tr.matmul([tr.scale(40,40,1.5),tr.translate(0,0,0)])
 
@@ -29,7 +30,7 @@ class food():
         self.x=random.uniform(-18.5,18.5)
         self.y=random.uniform(-18.5,18.5)
 
-        self.objeto = bs.createTextureCube('models/bloque.png')
+        self.objeto = bs.createTextureCube('models/textures/bloque.png')
         self.GPUfood= es.toGPUShape(self.objeto, GL_REPEAT, GL_LINEAR)
         self.model= tr.matmul([tr.translate(self.x,self.y,1.5),tr.uniformScale(1.5)])
 

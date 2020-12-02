@@ -6,18 +6,53 @@ import random
 import lib.basic_shapes as bs
 import lib.easy_shaders as es
 import lib.transformations as tr
+import lib.obj_handler as obj_reader
+
+class cabeza():
+    def __init__(self):
+        obj='models/figure/snake_head.obj'
+        obj_cabeza=obj_reader.readOBJ2(f'{obj}',"models/textures/snake_head.png")
+        self.gpuOBJ = es.toGPUShape( obj_cabeza , GL_REPEAT, GL_LINEAR)
+        self.transform=tr.matmul([tr.translate(0.0,0.0,1.5),tr.uniformScale(0.5),tr.rotationX(np.pi/2)])
+    
+    def draw(self, texture_pipeline, view, projection):
+        # Setting light intensity
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "La"), 1.0, 1.0, 1.0)
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "Ld"), 1.0, 1.0, 1.0)
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "Ls"), 0.5, 0.5, 0.5)
+
+        # Setting material composition
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "Ka"), 0.2, 0.2, 0.2)
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "Kd"), 0.9, 0.9, 0.9)
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "Ks"), 0.5, 0.5, 0.5)
+
+        # Setting light position, camera position, and other parameters
+        # Note that the lightPosition is where we are looking at
+        # The view Position is our current position.
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "lightPosition"), 50 ,50 ,50)
+        glUniform3f(glGetUniformLocation(texture_pipeline.shaderProgram, "viewPosition"), 1, 1, 1)
+        glUniform1ui(glGetUniformLocation(texture_pipeline.shaderProgram, "shininess"), 1000)
+        glUniform1f(glGetUniformLocation(texture_pipeline.shaderProgram, "constantAttenuation"), 0.001)
+        glUniform1f(glGetUniformLocation(texture_pipeline.shaderProgram, "linearAttenuation"), 0.0001)
+        glUniform1f(glGetUniformLocation(texture_pipeline.shaderProgram, "quadraticAttenuation"), 0.0001)
+
+        glUseProgram(texture_pipeline.shaderProgram)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "model"), 1, GL_TRUE, self.transform)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(texture_pipeline.shaderProgram, "view"), 1, GL_TRUE, view)
+        texture_pipeline.drawShape(self.gpuOBJ)
 
 class head():
     def __init__(self):
         self.x, self.y = 0, 0
         self.angle = 0
-        self.bend= 0.085
+        self.bend= 0.08
         self.front = 0.1
         self.turn = 0
 
         ran=str(random.randint(1,4))
 
-        self.GPUsnake=(es.toGPUShape(bs.generateTextureSphere(7,7,"models/snake"+ran+".png"), GL_REPEAT, GL_LINEAR))
+        self.GPUsnake=(es.toGPUShape(bs.generateTextureSphere(7,7,"models/textures/snake"+ran+".png"), GL_REPEAT, GL_LINEAR))
         self.transform = tr.matmul([tr.translate(0.0,0.0,1.5),tr.uniformScale(0.5),tr.rotationZ(self.angle)])
     def draw(self, texture_pipeline, view, projection):
         glUseProgram(texture_pipeline.shaderProgram)
@@ -39,7 +74,7 @@ class body():
         self.angle = 0
         ran=str(random.randint(1,4))
 
-        self.GPUsnake=(es.toGPUShape(bs.generateTextureSphere(7,7,"models/snake"+ran+".png"), GL_REPEAT, GL_LINEAR))
+        self.GPUsnake=(es.toGPUShape(bs.generateTextureSphere(7,7,"models/textures/snake"+ran+".png"), GL_REPEAT, GL_LINEAR))
         self.transform = tr.matmul([tr.translate(self.x,self.y,1.5),tr.uniformScale(0.5),tr.rotationZ(self.angle)])
     
     def draw(self, texture_pipeline, view, projection):
