@@ -5,8 +5,9 @@ import lib.transformations as tr
 
 class Controller:
     def __init__(self,Snake):
-        self.snake=Snake
-        
+        self.entire_snake=Snake
+        self.snake=Snake.snake_list[0]
+
         self.Snake_view=True
         self.inclinate_view=False
         self.top_view=False
@@ -15,20 +16,20 @@ class Controller:
     def camera(self):
         if self.top_view:
                 return tr.lookAt(
-            np.array([0,0,60]), # eye
-            np.array([0,0.0001,0]), # at
+            np.array([0,-0.01,55]), # eye
+            np.array([0,0,0]), # at
             np.array([0,0,1])  # up
         )
 
         elif self.inclinate_view:
                 return tr.lookAt(
-            np.array([0,-41,41]), # eye
+            np.array([0,-29,51]), # eye
             np.array([0,0.0001,0]), # at
             np.array([0,0,1])  # up
         )
         elif self.Snake_view:
                 return tr.lookAt(
-                np.array([self.snake.x+np.cos(self.snake.angle)*-10, self.snake.y+np.sin(self.snake.angle)*-10,7]),   # eye
+                np.array([self.snake.x+np.cos(self.snake.angle)*-10, self.snake.y+np.sin(self.snake.angle)*-10,5]),   # eye
                 np.array([self.snake.x+np.cos(self.snake.angle), self.snake.y+np.sin(self.snake.angle),1]),  # at
                 np.array([0,0,1])    
         )
@@ -73,6 +74,15 @@ class Controller:
                 self.Snake_view=True
                 self.inclinate_view=False
                 self.top_view=False
+        if key == glfw.KEY_ENTER and action==glfw.PRESS:
+            if self.entire_snake.live==False:
+                self.entire_snake.isDeath()
+                self.Snake_view=True
+                self.inclinate_view=False
+                self.top_view=False
+            else:
+                pass
+    
 
         else:
             pass
