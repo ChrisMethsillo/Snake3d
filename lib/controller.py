@@ -22,7 +22,7 @@ class Controller:
 
         elif self.inclinate_view:
                 return tr.lookAt(
-            np.array([0,-50,45]), # eye
+            np.array([0,-41,41]), # eye
             np.array([0,0.0001,0]), # at
             np.array([0,0,1])  # up
         )

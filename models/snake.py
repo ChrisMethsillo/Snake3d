@@ -14,7 +14,7 @@ class head():
     def __init__(self):
         self.x, self.y = 0, 0
         self.angle = 0
-        self.bend= 0.07
+        self.bend= 0.1
         self.front = 0.1
         self.turn = 0
 
@@ -78,6 +78,7 @@ class body():
 
 class snake():
     def __init__(self):
+        self.live=True
         self.snake_list=[
             head(),body(),body(),body(),body(),
             body(),body(),body(),body(),body(),
@@ -105,6 +106,34 @@ class snake():
     def grow(self):
         self.snake_list[0].front+=0.0008
         self.snake_list[0].bend+= 0.0007
+    
+    def die(self):
+        x,y=self.snake_list[0].x,self.snake_list[0].y
+        for i in range(6,len(self.snake_list)):
+            if (x-self.snake_list[i].x)**2+(y-self.snake_list[i].y)**2<0.5:
+                self.live=False
+
+        if (self.snake_list[0].x)**2>400 or (self.snake_list[0].y)**2>400:
+            self.live=False
+
+    def isDeath(self):
+        if self.live==False:
+            self.live=True
+            self.snake_list[0].x,self.snake_list[0].y=0,0
+            self.snake_list[0].angle = 0
+            self.snake_list[0].bend= 0.1
+            self.snake_list[0].front = 0.1
+            self.snake_list[0].turn = 0
+
+            self.snake_list[1].x=-0.25
+            self.snake_list[1].move()
+            i=1
+            for part in self.snake_list[2:]:
+                part.x+=-0.25*i
+                part.move()
+                i+=1
+
+
 
     def move_snake(self):
         i=len(self.snake_list)-1

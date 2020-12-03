@@ -26,10 +26,10 @@ if __name__ == "__main__":
     if not glfw.init():
         sys.exit()
 
-    width = 900
-    height = 800
+    width = 1000
+    height = 900
 
-    window = glfw.create_window(width, height, "PATO CUBO", None, None)
+    window = glfw.create_window(width, height, "SNAKE 3D", None, None)
 
     if not window:
         glfw.terminate()
@@ -37,6 +37,8 @@ if __name__ == "__main__":
 
     glfw.make_context_current(window)
     
+    jungle=jungle()
+    jungle_floor=jungle_floor()
     floor=floor()
     food=food()
     Snake=snake()
@@ -93,15 +95,20 @@ if __name__ == "__main__":
         Snake.snake_list[0].move()
         Snake.snake_list[0].update()
         Snake.move_snake()
+      
 
-        
         floor.draw(texture_pipeline, camara ,projection)
         Snake.draw(texture_pipeline, camara ,projection)
+        jungle.draw(texture_pipeline, camara ,projection)
+        jungle_floor.draw(texture_pipeline, camara ,projection)
         
 
         glUseProgram(obj_pipeline.shaderProgram)
         cabeza.draw(obj_pipeline, camara ,projection)
         food.draw(obj_pipeline, camara ,projection)
+
+        Snake.die()
+        Snake.isDeath()
         
        
         # Once the render is done, buffers are swapped, showing only the complete scene.
