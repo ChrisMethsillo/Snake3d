@@ -24,6 +24,7 @@ class head():
         self.transform=tr.matmul([tr.translate(self.x,self.y,1.5),tr.uniformScale(0.3),tr.rotationX(3.14/2),tr.rotationY(-3.14/2),tr.rotationZ(self.angle)])
 
     def draw(self, pipeline, view, projection):
+        glUseProgram(pipeline.shaderProgram)
         # Setting light intensity
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "La"), 1.0, 1.0, 1.0)
         glUniform3f(glGetUniformLocation(pipeline.shaderProgram, "Ld"), 1.0, 1.0, 1.0)
@@ -89,7 +90,6 @@ class snake():
             body(),body(),body(),body(),body(),
             body(),body(),body(),body(),body(),
             body(),body(),body(),body(),body(),
-            body(),body(),body(),body(),body(),
             body(),body(),body(),body(),body()] 
 
         self.snake_list[1].x=-0.25
@@ -110,6 +110,7 @@ class snake():
         new.y=self.snake_list[-1].y
         new.angle=self.snake_list[-1].angle
         new.move()
+        
         self.count+=1
         self.snake_list.append(new)
 
