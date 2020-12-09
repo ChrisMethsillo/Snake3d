@@ -1,6 +1,6 @@
 from models.structure import *
 from models.snake import *
-from lib.controller import *
+from controller.controller import *
 from imports.pipelines import *
 
 import glfw

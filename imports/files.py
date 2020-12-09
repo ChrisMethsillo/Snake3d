@@ -9,7 +9,7 @@ import time
 from models.structure import *
 from models.snake import *
 
-from lib.controller import *
+from controller.controller import *
 import lib.transformations as tr
 import lib.lighting_shaders as ls
 import lib.easy_shaders as es
